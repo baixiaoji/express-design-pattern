@@ -7,10 +7,19 @@ const emails = require("./fixtures/emails.json");
 const app = express()
 
 let getUsersRoute = (req, res) => {
+    console.log(req.params)
     res.send(users)
+}
+let getUserRoute = (req, res) => {
+    const user = users.find(user => user.id === req.params.id)
+    res.send(user)
 }
 let getEmailsRoute = (req, res) => {
     res.send(emails)
+}
+let getEmailRoute = (req, res) => {
+    const email = emails.find(email => email.id === req.params.id)
+    res.send(email)
 }
 
 let noRouteHandler = (req, res) => {
@@ -18,22 +27,16 @@ let noRouteHandler = (req, res) => {
     res.end(`you asked for ${route}\n`);
 }
 
-let routes = {
-    'GET /users': getUsersRoute,
-    'GET /emails': getEmailsRoute,
-}
+let usersRouter = express.Router();
+let emailsRouter = express.Router();
 
-let router = (req, res) => {
-    let route = req.method + " " + req.url;
+usersRouter.get('/users', getUsersRoute)
+usersRouter.get('/users/:id', getUserRoute)
+emailsRouter.get('/emails', getEmailsRoute)
+emailsRouter.get('/emails/:id', getEmailRoute)
 
-    const handler = routes[route] || noRouteHandler
-
-    console.log(req.accepts())
-    res.type(req.accepts()[0])
-    handler(req, res)
-}
-
-app.use(router)
+app.use(usersRouter)
+app.use(emailsRouter)
 
 // let server = http.createServer(app);
 
