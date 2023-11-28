@@ -23,7 +23,7 @@ let routes = {
     'GET /emails': getEmailsRoute,
 }
 
-app.use((req, res) => {
+let router = (req, res) => {
     let route = req.method + " " + req.url;
 
     const handler = routes[route] || noRouteHandler
@@ -31,7 +31,9 @@ app.use((req, res) => {
     console.log(req.accepts())
     res.type(req.accepts()[0])
     handler(req, res)
-})
+}
+
+app.use(router)
 
 // let server = http.createServer(app);
 
